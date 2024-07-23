@@ -2,12 +2,12 @@ import pandas as pd
 from transformers import BertTokenizer, BertForSequenceClassification, Trainer, TrainingArguments
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-import torch
-import numpy as np
+import numpy as np 
 from datasets import Dataset
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+
 #โหลดดาต้า       
-df = pd.read_excel('C:\\Users\\mhewwha\\OneDrive\\Desktop\\ProjectWha\\AI\\data\\Gas1.xlsx')
+df = pd.read_excel('C:\\Users\\ritht\\Downloads\\ProjectWha\\AI\\data\\Gas1.xlsx')
 
 #่ทำความสะอาดข้อมูล ฟช.cleantext
 def CleanText(text): #textคือdata ทั้งหมดของเรา
@@ -34,7 +34,10 @@ testDataframe = Dataset.from_pandas(test_df)
 model_name = "bert-base-multilingual-cased" 
 tokenizer = BertTokenizer.from_pretrained(model_name)
 
+#โหลดโมเดล
 model = BertForSequenceClassification.from_pretrained(model_name, num_labels=len(df["Label"].unique()))
+
+#ฟังก์ชั่น
 def tokenized_and_labels(examples):
     tokenized = tokenizer(examples["message"] ,padding = "max_length",truncation=True,max_length=512) 
     tokenized["labels"]=examples["Label"]
@@ -77,11 +80,9 @@ compute_metrics = compute_metrics
 )
 #ฝึกโมเดล
 trainer.train()
-#ประเมินผล
-results = trainer.evaluate()
-print(results)
 
-
+model.save_pretrained("./whaAi")
+tokenizer.save_pretrained("./whaAi")
 
 
 
